@@ -12,10 +12,10 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import java.io.File;
+import cn.jianke.imageswitcher.module.ThreadManager;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class ImageLoader {
-    // sington
     private static ImageLoader instance = null;
     private ImageLoader(){
     }
@@ -26,16 +26,24 @@ public class ImageLoader {
         return instance;
     }
 
-    public void load(Context context, ImageView imageView, String url){
-        load(context, imageView, url, null, null,false);
+    public void load(Context context, ImageView imageView, String remoteUrl){
+        load(context, imageView, remoteUrl, null, null,false);
     }
 
     public void load(Context context, ImageView imageView, File localFile){
         load(context, imageView, localFile, null, null,false);
     }
 
-    public void load(Context context, ImageView imageView, String url, boolean isCropCircle){
-        load(context, imageView, url, null, null,isCropCircle);
+    public void load(Context context, ImageView imageView, File localFile, boolean isCropCircle){
+        load(context, imageView, localFile, null, null,isCropCircle);
+    }
+
+    public void load(Context context, ImageView imageView, File localFile, Drawable defaultImage){
+        load(context, imageView, localFile, defaultImage, null, false);
+    }
+
+    public void load(Context context, ImageView imageView, String remoteUrl, boolean isCropCircle){
+        load(context, imageView, remoteUrl, null, null,isCropCircle);
     }
 
     public void load(Context context, ImageView imageView, String url, Drawable defaultImage){
@@ -95,8 +103,13 @@ public class ImageLoader {
         Glide.get(context).clearMemory();
     }
 
-    public void clearDiskCache(Context context){
-        Glide.get(context).clearDiskCache();
+    public void clearDiskCache(final Context context){
+        ThreadManager.getInstance().getNewCachedThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                Glide.get(context).clearDiskCache();
+            }
+        });
     }
 
     public void clearViewCache(View view){

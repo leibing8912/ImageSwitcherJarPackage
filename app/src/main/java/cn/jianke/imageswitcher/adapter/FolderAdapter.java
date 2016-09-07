@@ -13,7 +13,6 @@ import cn.jianke.imageswitcher.R;
 import cn.jianke.imageswitcher.bean.Folder;
 import cn.jianke.imageswitcher.module.ImageConfig;
 
-
 public class FolderAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater mLayoutInflater;
@@ -28,10 +27,9 @@ public class FolderAdapter extends BaseAdapter {
     }
 
     public void setData(List<Folder> folders) {
+        folderList.clear();
         if (folders != null && folders.size() > 0) {
             folderList.addAll(folders);
-        } else {
-            folderList.clear();
         }
         notifyDataSetChanged();
     }
